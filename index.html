@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haha! Enjoy the music!</title>
+    <style>
+        /* Ensure full-page coverage with a margin */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: black; /* Black background for contrast */
+            overflow: hidden; /* Prevents scrolling */
+        }
+
+        /* Video wrapper to maintain aspect ratio */
+        .video-container {
+            width: 94vw;  /* 3% margin on left and right */
+            height: 94vh; /* 3% margin on top and bottom */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            aspect-ratio: 4 / 3; /* Ensure 680x480 aspect ratio */
+            object-fit: contain; /* Maintain aspect ratio without cropping */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Video Container -->
+    <div class="video-container">
+        <video id="myVideo" autoplay muted playsinline>
+            <source src="Calum_Dan_Van_trim_small.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let video = document.getElementById("myVideo");
+
+            // Function to restart the video, enable sound, and prevent pausing/volume changes
+            function enableSound() {
+                // Restart the video if the user clicks (on the first click)
+                video.currentTime = 0; // Reset video to the start
+                video.play().catch(error => {
+                    console.error("Autoplay prevented:", error);
+                });
+
+                // Enable sound
+                video.muted = false;
+                video.volume = 1.0; // Set the video volume to 100%
+
+                // Ensure the video plays after enabling sound
+                let playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log("Sound enabled and video playing");
+                    }).catch(error => {
+                        console.error("Playback prevented:", error);
+                    });
+                }
+
+                // Prevent pausing and volume change for 10 seconds
+                video.addEventListener("pause", preventPause);
+                video.addEventListener("volumechange", preventVolumeChange);
+
+                function preventPause() {
+                    video.play(); // Force play if user tries to pause
+                }
+
+                function preventVolumeChange() {
+                    if (video.volume < 1.0) {
+                        video.volume = 1.0; // Force max volume
+                    }
+                }
+
+                // Prevent volume adjustment during the first 10 seconds
+                let volumeCheckInterval = setInterval(() => {
+                    if (video.volume < 1.0) {
+                        video.volume = 1.0; // Force max volume
+                    }
+                }, 100); // Check every 100ms
+
+                // After 10 seconds, allow pausing and volume changes again
+                setTimeout(() => {
+                    clearInterval(volumeCheckInterval); // Stop checking the volume
+                    video.removeEventListener("pause", preventPause);
+                    video.removeEventListener("volumechange", preventVolumeChange);
+                    console.log("User can now pause and change volume.");
+                }, 10000);
+
+                // Remove click listener after activation
+                document.removeEventListener("click", enableSound);
+            }
+
+            // Wait for user interaction to unmute and restart the video
+            document.addEventListener("click", enableSound);
+
+            // Loop the video 5 seconds after it finishes
+            video.addEventListener('ended', function() {
+                console.log("Video finished. Waiting 5 seconds to restart.");
+                setTimeout(function() {
+                    console.log("Video restarting...");
+                    video.play();
+                }, 5000); // Delay the restart for 5 seconds
+            });
+        });
+    </script>
+
+</body>
+</html>
