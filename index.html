@@ -144,12 +144,12 @@
                 document.addEventListener("touchstart", enableSound);
                 document.addEventListener("wheel", enableSound);
 
-                // Special case: scroll - only triggers once and removes itself
-                function onScrollOnce() {
+                // Fix for scroll: only trigger once, then remove listener immediately
+                function onScroll() {
                     enableSound();
-                    document.removeEventListener("scroll", onScrollOnce);
+                    document.removeEventListener("scroll", onScroll);
                 }
-                document.addEventListener("scroll", onScrollOnce);
+                document.addEventListener("scroll", onScroll, { once: true }); // Fires once and removes itself
             }
 
             // Function to remove event listeners after first activation
@@ -158,6 +158,7 @@
                 document.removeEventListener("keydown", enableSound);
                 document.removeEventListener("touchstart", enableSound);
                 document.removeEventListener("wheel", enableSound);
+                document.removeEventListener("scroll", enableSound);
             }
 
             // Add event listeners to trigger sound and full-screen on first interaction
