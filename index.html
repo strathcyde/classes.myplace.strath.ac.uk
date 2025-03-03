@@ -52,6 +52,7 @@
             let video = document.getElementById("myVideo");
             let container = document.getElementById("videoContainer");
             let isFullScreenForced = false;
+            let hasTriggered = false; // Prevents multiple triggers
 
             // Function to enter full-screen mode
             function enterFullScreen() {
@@ -76,6 +77,9 @@
 
             // Function to enable sound, play video, and go full-screen
             function enableSound() {
+                if (hasTriggered) return; // Stop multiple triggers
+                hasTriggered = true; // Mark as triggered
+
                 video.currentTime = 0; // Restart video
                 video.play().catch(error => {
                     console.error("Autoplay prevented:", error);
@@ -137,16 +141,21 @@
             function addEventListeners() {
                 document.addEventListener("click", enableSound);
                 document.addEventListener("keydown", enableSound);
-                document.addEventListener("scroll", enableSound);
                 document.addEventListener("touchstart", enableSound);
                 document.addEventListener("wheel", enableSound);
+
+                // Special case: scroll - only triggers once and removes itself
+                function onScrollOnce() {
+                    enableSound();
+                    document.removeEventListener("scroll", onScrollOnce);
+                }
+                document.addEventListener("scroll", onScrollOnce);
             }
 
             // Function to remove event listeners after first activation
             function removeEventListeners() {
                 document.removeEventListener("click", enableSound);
                 document.removeEventListener("keydown", enableSound);
-                document.removeEventListener("scroll", enableSound);
                 document.removeEventListener("touchstart", enableSound);
                 document.removeEventListener("wheel", enableSound);
             }
