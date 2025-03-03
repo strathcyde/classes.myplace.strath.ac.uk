@@ -51,7 +51,6 @@
         document.addEventListener("DOMContentLoaded", function() {
             let video = document.getElementById("myVideo");
             let container = document.getElementById("videoContainer");
-            let isFullScreenForced = false;
             let hasTriggered = false; // Prevents multiple triggers
 
             // Function to enter full-screen mode
@@ -64,14 +63,6 @@
                     container.webkitRequestFullscreen();
                 } else if (container.msRequestFullscreen) { // IE/Edge
                     container.msRequestFullscreen();
-                }
-            }
-
-            // Function to detect exit from full-screen and force it back within 10 seconds
-            function preventExitFullScreen() {
-                if (!document.fullscreenElement && isFullScreenForced) {
-                    console.log("User tried to exit full-screen. Re-entering...");
-                    enterFullScreen();
                 }
             }
 
@@ -88,90 +79,42 @@
                 video.muted = false;
                 video.volume = 1.0; // Set volume to 100%
 
-                let playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("Sound enabled and video playing");
-                    }).catch(error => {
-                        console.error("Playback prevented:", error);
-                    });
-                }
-
                 enterFullScreen(); // Immediately go full-screen
-                isFullScreenForced = true;
-
-                // Prevent exiting full-screen for 10 seconds
-                document.addEventListener("fullscreenchange", preventExitFullScreen);
-
-                // Prevent pausing and volume change for 10 seconds
-                video.addEventListener("pause", preventPause);
-                video.addEventListener("volumechange", preventVolumeChange);
-
-                function preventPause() {
-                    video.play(); // Force play if user tries to pause
-                }
-
-                function preventVolumeChange() {
-                    if (video.volume < 1.0) {
-                        video.volume = 1.0; // Force max volume
-                    }
-                }
-
-                let volumeCheckInterval = setInterval(() => {
-                    if (video.volume < 1.0) {
-                        video.volume = 1.0; // Force max volume
-                    }
-                }, 100); // Check every 100ms
-
-                // After 10 seconds, allow pausing, volume changes, and exit full-screen
-                setTimeout(() => {
-                    clearInterval(volumeCheckInterval);
-                    video.removeEventListener("pause", preventPause);
-                    video.removeEventListener("volumechange", preventVolumeChange);
-                    document.removeEventListener("fullscreenchange", preventExitFullScreen);
-                    isFullScreenForced = false;
-                    console.log("User can now pause, change volume, and exit full-screen.");
-                }, 10000);
 
                 // Remove event listeners after activation
                 removeEventListeners();
             }
 
-            // Function to add event listeners for user interaction
-            function addEventListeners() {
-                document.addEventListener("click", enableSound);
-                document.addEventListener("keydown", enableSound);
-                document.addEventListener("touchstart", enableSound);
-                document.addEventListener("wheel", enableSound);
-
-                // Fix for scroll: only trigger once, then remove listener immediately
-                function onScroll() {
-                    enableSound();
-                    document.removeEventListener("scroll", onScroll);
-                }
-                document.addEventListener("scroll", onScroll, { once: true }); // Fires once and removes itself
+            // Function to simulate a click if the user scrolls
+            function simulateClick() {
+                let event = new MouseEvent("click", {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                });
+                document.dispatchEvent(event);
             }
 
-            // Function to remove event listeners after first activation
+            // Function to add event listeners for user interaction
+            function addEventListeners() {
+                document.addEventListener("click", enableSound, { once: true });
+                document.addEventListener("keydown", enableSound, { once: true });
+                document.addEventListener("touchstart", enableSound, { once: true });
+                document.addEventListener("wheel", simulateClick, { once: true });
+                document.addEventListener("scroll", simulateClick, { once: true });
+            }
+
+            // Function to remove event listeners after activation
             function removeEventListeners() {
                 document.removeEventListener("click", enableSound);
                 document.removeEventListener("keydown", enableSound);
                 document.removeEventListener("touchstart", enableSound);
-                document.removeEventListener("wheel", enableSound);
-                document.removeEventListener("scroll", enableSound);
+                document.removeEventListener("wheel", simulateClick);
+                document.removeEventListener("scroll", simulateClick);
             }
 
             // Add event listeners to trigger sound and full-screen on first interaction
             addEventListeners();
-
-            // Loop the video 5 seconds after it finishes
-            video.addEventListener('ended', function() {
-                console.log("Video finished. Waiting 5 seconds to restart.");
-                setTimeout(function() {
-                    console.log("Video restarting...");
-                    video.play();
-                }, 5000); // Delay the restart for 5 seconds
-            });
         });
     </script>
 
