@@ -85,26 +85,21 @@
                 removeEventListeners();
             }
 
-            // Function to simulate a click if the user scrolls
-            function simulateClick() {
-                let event = new MouseEvent("click", {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                });
-                document.dispatchEvent(event);
-            }
-
             // Function to add event listeners for user interaction
             function addEventListeners() {
                 document.addEventListener("click", enableSound, { once: true });
                 document.addEventListener("keydown", enableSound, { once: true });
                 document.addEventListener("touchstart", enableSound, { once: true });
-                document.addEventListener("wheel", simulateClick, { once: true });
-                document.addEventListener("scroll", simulateClick, { once: true });
-            }
+                document.addEventListener("wheel", function() {
+			console.log("Wheel event triggered");
+		}, { once: true });
 
-            // Function to remove event listeners after activation
+		document.addEventListener("scroll", function() {
+			console.log("Scroll event triggered");
+		}, { once: true });
+
+
+		    // Function to remove event listeners after activation
             function removeEventListeners() {
                 document.removeEventListener("click", enableSound);
                 document.removeEventListener("keydown", enableSound);
