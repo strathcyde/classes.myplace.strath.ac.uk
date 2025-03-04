@@ -56,26 +56,21 @@
             function enablehavoc() {
                 // Restart the video if the user clicks (on the first click)
                 video.currentTime = 0; // Reset video to the start
-                let playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("Sound enabled and video playing");
-                    }).catch(error => {
-                        console.error("Playback prevented:", error);
-                    });
-                }
+                video.play().catch(error => {
+                    console.error("Autoplay prevented:", error);
+                });
 
                 // Enable sound
                 video.muted = false;
                 video.volume = 1.0; // Set the video volume to 100%
 
                 // Ensure the video plays after enabling sound
-                let playPromiseAgain = video.play();
-                if (playPromiseAgain !== undefined) {
-                    playPromiseAgain.then(() => {
-                        console.log("Sound enabled and video playing again.");
+                let playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log("Sound enabled and video playing");
                     }).catch(error => {
-                        console.error("Playback prevented again:", error);
+                        console.error("Playback prevented:", error);
                     });
                 }
 
@@ -95,15 +90,14 @@
 
                 // Function to enter full-screen mode
                 function enterFullScreen() {
-                    // Simplified fullscreen code for better mobile support
-                    if (container.requestFullscreen) {
-                        container.requestFullscreen();
-                    } else if (container.mozRequestFullScreen) { // Firefox
-                        container.mozRequestFullScreen();
-                    } else if (container.webkitRequestFullscreen) { // Chrome, Safari, Edge
-                        container.webkitRequestFullscreen();
-                    } else if (container.msRequestFullscreen) { // IE/Edge
-                        container.msRequestFullscreen();
+                    if (video.requestFullscreen) {
+                        video.requestFullscreen();
+                    } else if (video.mozRequestFullScreen) { // Firefox
+                        video.mozRequestFullScreen();
+                    } else if (video.webkitRequestFullscreen) { // Chrome, Safari, Edge
+                        video.webkitRequestFullscreen();
+                    } else if (video.msRequestFullscreen) { // IE/Edge
+                        video.msRequestFullscreen();
                     }
                 }
 
