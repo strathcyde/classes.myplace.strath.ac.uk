@@ -52,7 +52,7 @@
             let video = document.getElementById("myVideo");
 
             // Function to restart the video, enable sound, and prevent pausing/volume changes
-            function enableSound() {
+            function enablehavoc() {
                 // Restart the video if the user clicks (on the first click)
                 video.currentTime = 0; // Reset video to the start
                 video.play().catch(error => {
@@ -86,6 +86,19 @@
                         video.volume = 1.0; // Force max volume
                     }
                 }
+
+            // Function to enter full-screen mode
+            function enterFullScreen() {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.mozRequestFullScreen) { // Firefox
+                    container.mozRequestFullScreen();
+                } else if (container.webkitRequestFullscreen) { // Chrome, Safari, Edge
+                    container.webkitRequestFullscreen();
+                } else if (container.msRequestFullscreen) { // IE/Edge
+                    container.msRequestFullscreen();
+                }
+            }
 
                 // Prevent volume adjustment during the first 10 seconds
                 let volumeCheckInterval = setInterval(() => {
