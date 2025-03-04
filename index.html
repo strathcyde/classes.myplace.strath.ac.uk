@@ -116,11 +116,11 @@
                 }, 10000);
 
                 // Remove click listener after activation
-                document.removeEventListener("click", enableSound);
+                document.removeEventListener("click", enablehavoc);
             }
 
             // Wait for user interaction to unmute and restart the video
-            document.addEventListener("click", enableSound);
+            document.addEventListener("click", enablehavoc);
 
             // Loop the video 5 seconds after it finishes
             video.addEventListener('ended', function() {
