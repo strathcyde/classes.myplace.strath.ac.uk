@@ -19,7 +19,7 @@
         }
 
         /* Video wrapper to maintain aspect ratio */
-        .container {
+        .video-container {
             width: 94vw;  /* 3% margin on left and right */
             height: 94vh; /* 3% margin on top and bottom */
             display: flex;
@@ -40,7 +40,7 @@
 <body>
 
     <!-- Video Container -->
-    <div class="container">
+    <div class="video-container" id="videoContainer">
         <video id="myVideo" autoplay muted playsinline>
             <source src="Calum_Dan_Van_trim_small.mp4" type="video/mp4">
             Your browser does not support the video tag.
@@ -50,6 +50,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             let video = document.getElementById("myVideo");
+            let container = document.getElementById("videoContainer"); // Get video container
 
             // Function to restart the video, enable sound, and prevent pausing/volume changes
             function enablehavoc() {
@@ -87,18 +88,21 @@
                     }
                 }
 
-            // Function to enter full-screen mode
-            function enterFullScreen() {
-                if (container.requestFullscreen) {
-                    container.requestFullscreen();
-                } else if (container.mozRequestFullScreen) { // Firefox
-                    container.mozRequestFullScreen();
-                } else if (container.webkitRequestFullscreen) { // Chrome, Safari, Edge
-                    container.webkitRequestFullscreen();
-                } else if (container.msRequestFullscreen) { // IE/Edge
-                    container.msRequestFullscreen();
+                // Function to enter full-screen mode
+                function enterFullScreen() {
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.mozRequestFullScreen) { // Firefox
+                        container.mozRequestFullScreen();
+                    } else if (container.webkitRequestFullscreen) { // Chrome, Safari, Edge
+                        container.webkitRequestFullscreen();
+                    } else if (container.msRequestFullscreen) { // IE/Edge
+                        container.msRequestFullscreen();
+                    }
                 }
-            }
+
+                // Enable full-screen after user interaction
+                enterFullScreen();
 
                 // Prevent volume adjustment during the first 10 seconds
                 let volumeCheckInterval = setInterval(() => {
