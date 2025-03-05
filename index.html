@@ -1,3 +1,28 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,76 +30,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Haha! Enjoy the music!</title>
     <style>
-        /* Ensure full-page coverage with a margin */
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: black; /* Black background for contrast */
-            overflow: hidden; /* Prevents scrolling */
-        }
+        /* Your emulated website styles go here */
 
-        /* Video wrapper to maintain aspect ratio */
+
+
+        /* Video container styles */
         .video-container {
-            width: 94vw;  /* 3% margin on left and right */
-            height: 94vh; /* 3% margin on top and bottom */
+            width: 100%;
+            height: 500px; /* Adjust height as necessary */
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: black; /* Black background for contrast */
         }
 
         video {
             width: 100%;
             height: 100%;
-            max-width: 100%;
-            max-height: 100%;
-            aspect-ratio: 4 / 3; /* Ensure 680x480 aspect ratio */
             object-fit: contain; /* Maintain aspect ratio without cropping */
         }
     </style>
 </head>
 <body>
 
+    <!-- Emulated Website Content (with buttons and links) -->
+    <div class="emulated-content">
+        <nav>
+            <ul>
+                <li><a href="https://www.example.com" id="link1">Link 1</a></li>
+                <li><a href="https://www.example.com" id="link2">Link 2</a></li>
+            </ul>
+        </nav>
+        <button id="button1">Click Me</button>
+        <button id="button2">Don't Click Me</button>
+    </div>
+
     <!-- Video Container -->
-    <div class="video-container" id="videoContainer">
+    <div class="video-container">
         <video id="myVideo" autoplay muted playsinline>
             <source src="Calum_Dan_Van_trim_small.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
+    <!-- Additional content copied from the inspector (if needed) -->
+    <!-- Insert any copied HTML here -->
+
     <script>
+        
         document.addEventListener("DOMContentLoaded", function() {
             let video = document.getElementById("myVideo");
-            let container = document.getElementById("videoContainer"); // Get video container
 
             // Function to restart the video, enable sound, and prevent pausing/volume changes
-            function enablehavoc() {
-                // Restart the video if the user clicks (on the first click)
-                video.currentTime = 0; // Reset video to the start
+            function enableHavoc() {
+                video.currentTime = 0; // Restart video
                 video.play().catch(error => {
                     console.error("Autoplay prevented:", error);
                 });
 
                 // Enable sound
                 video.muted = false;
-                video.volume = 1.0; // Set the video volume to 100%
+                video.volume = 1.0;
 
-                // Ensure the video plays after enabling sound
-                let playPromise = video.play();
-                if (playPromise !== undefined) {
-                    playPromise.then(() => {
-                        console.log("Sound enabled and video playing");
-                    }).catch(error => {
-                        console.error("Playback prevented:", error);
-                    });
-                }
-
-                // Prevent pausing and volume change for 10 seconds
+                // Prevent pausing and volume change
                 video.addEventListener("pause", preventPause);
                 video.addEventListener("volumechange", preventVolumeChange);
 
@@ -88,47 +106,30 @@
                     }
                 }
 
-                // Function to enter full-screen mode
-                function enterFullScreen() {
-                    if (video.requestFullscreen) {
-                        video.requestFullscreen();
-                    } else if (video.mozRequestFullScreen) { // Firefox
-                        video.mozRequestFullScreen();
-                    } else if (video.webkitRequestFullscreen) { // Chrome, Safari, Edge
-                        video.webkitRequestFullscreen();
-                    } else if (video.msRequestFullscreen) { // IE/Edge
-                        video.msRequestFullscreen();
-                    }
-                }
 
-                // Enable full-screen after user interaction
-                enterFullScreen();
-
-                // Prevent volume adjustment during the first 10 seconds
-                let volumeCheckInterval = setInterval(() => {
-                    if (video.volume < 1.0) {
-                        video.volume = 1.0; // Force max volume
-                    }
-                }, 100); // Check every 100ms
-
-                // After 15 seconds, allow pausing and volume changes again
-                setTimeout(() => {
-                    clearInterval(volumeCheckInterval); // Stop checking the volume
-                    video.removeEventListener("pause", preventPause);
-                    video.removeEventListener("volumechange", preventVolumeChange);
-                    console.log("User can now pause and change volume.");
-                }, 15000);
 
                 // Remove click listener after activation
-                document.removeEventListener("click", enablehavoc);
-                document.removeEventListener("keypress", enablehavoc);
-                document.removeEventListener("touchstart", enablehavoc);
+                document.removeEventListener("click", enableHavoc);
             }
 
+            // Disable default link and button behavior
+            function disableLinkAndButton(event) {
+                event.preventDefault();  // Prevent link navigation
+                event.stopPropagation(); // Stop event from bubbling up
+
+                // Trigger the enableHavoc function on click
+                enableHavoc();
+            }
+
+            // Attach the event listener to all links and buttons
+            const linksAndButtons = document.querySelectorAll("a, button");
+
+            linksAndButtons.forEach(element => {
+                element.addEventListener("click", disableLinkAndButton);
+            });
+
             // Wait for user interaction to unmute and restart the video
-            document.addEventListener("click", enablehavoc);
-            document.addEventListener("keypress", enablehavoc);
-            document.addEventListener("touchstart", enablehavoc);
+            // document.addEventListener("click", enableHavoc);
 
             // Loop the video 5 seconds after it finishes
             video.addEventListener('ended', function() {
