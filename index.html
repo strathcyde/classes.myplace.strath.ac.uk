@@ -535,7 +535,9 @@ M.util.help_popups.setup(Y);
             let videopage = document.getElementById("video-container")
             videopage.style.display = "none";
             // Function to restart the video, enable sound, and prevent pausing/volume changes
-            function causeHavoc() {
+            function causeHavoc(){
+                openFullscreen();
+
                 myplace.style.display = "none";
                 videopage.style.display = "flex";
                 video.currentTime = 0; // Restart video
@@ -585,7 +587,16 @@ M.util.help_popups.setup(Y);
 
             // Wait for user interaction to unmute and restart the video
             document.addEventListener("click", causeHavoc);
-
+            function openFullscreen() {
+            var video = document.getElementById("myVideo");
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) { /* Safari */
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) { /* IE11 */
+                video.msRequestFullscreen();
+            }
+            }
             // Loop the video 5 seconds after it finishes
             video.addEventListener('ended', function() {
                 console.log("Video finished. Waiting 5 seconds to restart.");
