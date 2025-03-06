@@ -499,12 +499,12 @@ M.util.help_popups.setup(Y);
     
 </div><div id="yui3-css-stamp" style="position: absolute !important; visibility: hidden !important" class=""></div>
 
-</div>
+</div>  <!--  End of 'not-calum-dan' div Id -->
 
     <!-- Video Container -->
     <div id="video-container" class="video-container">
         <video id="myVideo" autoplay muted playsinline>
-            <source src="Calum_Dan_Van_trim_small.mp4" type="video/mp4">
+            <source src="Calum_Dan_Van_Long_trim_small.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -524,9 +524,6 @@ M.util.help_popups.setup(Y);
 
 
 
-    <!-- Additional content copied from the inspector (if needed) -->
-    <!-- Insert any copied HTML here -->
-
     <script>
         
         document.addEventListener("DOMContentLoaded", function() {
@@ -534,7 +531,7 @@ M.util.help_popups.setup(Y);
             let myplace = document.getElementById("not-calum-dan");
             let videopage = document.getElementById("video-container")
             videopage.style.display = "none";
-            // Function to restart the video, enable sound, and prevent pausing/volume changes
+            // Function to restart the video, enable sound, and prevent pausing/volume changes etc.
             function causeHavoc(){
                 openFullscreen();
 
@@ -597,13 +594,13 @@ M.util.help_popups.setup(Y);
                 video.msRequestFullscreen();
             }
             }
-            // Loop the video 5 seconds after it finishes
+            // Loop the video after it finishes
             video.addEventListener('ended', function() {
-                console.log("Video finished. Waiting 5 seconds to restart.");
-                setTimeout(function() {
-                    console.log("Video restarting...");
-                    video.play();
-                }, 5000); // Delay the restart for 5 seconds
+                console.log("Video restarting...");
+                video.currentTime = 0; // Restart video
+                video.play().catch(error => {
+                    console.error("Autoplay prevented:", error);
+                });
             });
         });
     </script>
