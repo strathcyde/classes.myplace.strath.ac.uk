@@ -501,15 +501,24 @@ M.util.help_popups.setup(Y);
 
 </div>  <!--  End of 'not-calum-dan' div Id -->
 
+
+
+
+
+
+
+
     <!-- Video Container -->
     <div id="video-container" class="video-container">
-        <video id="myVideo" autoplay muted playsinline>
+        <video id="myVideo" autoplay playsinline muted>
             <source src="Calum_Dan_Van_Long_trim_small.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
 </body>
+
+
 
 
 
@@ -531,31 +540,76 @@ M.util.help_popups.setup(Y);
             let myplace = document.getElementById("not-calum-dan");
             let videopage = document.getElementById("video-container")
             videopage.style.display = "none";
-            // Function to restart the video, enable sound, and prevent pausing/volume changes etc.
+
+            //////////// Define all the functions that will be called ////////////
+            function openFullscreen() {
+            if (videopage.requestFullscreen) { /*standard*/
+                videopage.requestFullscreen();
+            } else if (videopage.webkitRequestFullscreen) { /* Safari */
+                videopage.webkitRequestFullscreen();
+            } else if (videopage.msRequestFullscreen) { /* IE11 */
+                videopage.msRequestFullscreen();
+            } else if (videopage.mozRequestFullscreen) { /*firefox*/
+                videopage.mozRequestFullscreen();
+            } 
+            }
+
+            function preventPause() {
+                    video.play(); // Force play if user tries to pause
+            }
+
+            function preventVolumeChange() {
+                //<div id="lockeddiv" > </div>
+                video.muted = false;
+                if (video.volume < 1.0) {
+                     video.volume = 1.0; // Force max volume
+                }
+            }
+
+            function RestartCalumDan() {
+                console.log("Video restarting...");
+                video.currentTime = 0; // Restart video
+                video.play().catch(error => {
+                    console.error("Autoplay prevented:", error);
+                });
+            };
+
+
+            // causeHavoc Function to restart the video, enable sound & prevent pausing/volume changes etc.
             function causeHavoc(){
                 openFullscreen();
                 myplace.style.display = "none";
                 videopage.style.display = "flex";
+                //<div id="lockeddiv" > </div>
                 video.currentTime = 0; // Restart video
                 video.play().catch(error => {
                     console.error("Autoplay prevented:", error);
                 });
 
                 // Enable sound
+                //<div id="lockeddiv" > </div>
                 video.muted = false;
                 video.volume = 1.0;
 
-                // Prevent pausing and volume change
+
+                // Remove click listener after causeHavoc activation
+                document.removeEventListener("click", causeHavoc);
+
+                //Give opertunity to restart audio incase browser still blocks audio
+                video.addEventListener("click", preventVolumeChange, {once: true});
+                video.addEventListener("touchstart", preventVolumeChange, {once: true});
+
+                // Prevent pausing, volume change or full-screen exit
                 video.addEventListener("pause", preventPause);
                 video.addEventListener("volumechange", preventVolumeChange);
                 video.addEventListener("fullscreenchange", openFullscreen);
 
+
                 // Loop the video after it finishes
                 video.addEventListener('ended', RestartCalumDan)
+            }  ////////////////////   END of causeHavoc FUNCTION   ////////////////////
 
-                // Remove click listener after activation
-                document.removeEventListener("click", causeHavoc);
-            }
+
 
 
             // Disable default link and button behavior
@@ -575,36 +629,6 @@ M.util.help_popups.setup(Y);
             // Wait for user interaction to unmute and restart the video
             document.addEventListener("click", causeHavoc);
 
-
-            function openFullscreen() {
-            var video = document.getElementById("myVideo");
-            if (video.requestFullscreen) {
-                video.requestFullscreen();
-            } else if (video.webkitRequestFullscreen) { /* Safari */
-                video.webkitRequestFullscreen();
-            } else if (video.msRequestFullscreen) { /* IE11 */
-                video.msRequestFullscreen();
-            }
-            }
-
-            function preventPause() {
-                    video.play(); // Force play if user tries to pause
-            }
-
-            function preventVolumeChange() {
-                video.muted = false;
-                if (video.volume < 1.0) {
-                     video.volume = 1.0; // Force max volume
-                }
-            }
-
-            function RestartCalumDan() {
-                console.log("Video restarting...");
-                video.currentTime = 0; // Restart video
-                video.play().catch(error => {
-                    console.error("Autoplay prevented:", error);
-                });
-            };
         });
     </script>
 
