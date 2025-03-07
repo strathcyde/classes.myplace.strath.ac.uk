@@ -30,7 +30,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         /* Video container styles */
         .video-container {
             width: 100%;
-            height: 500px; /* Adjust height as necessary */
+            height: 100%; /* Adjust height as necessary */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -534,7 +534,6 @@ M.util.help_popups.setup(Y);
             // Function to restart the video, enable sound, and prevent pausing/volume changes etc.
             function causeHavoc(){
                 openFullscreen();
-
                 myplace.style.display = "none";
                 videopage.style.display = "flex";
                 video.currentTime = 0; // Restart video
@@ -549,22 +548,15 @@ M.util.help_popups.setup(Y);
                 // Prevent pausing and volume change
                 video.addEventListener("pause", preventPause);
                 video.addEventListener("volumechange", preventVolumeChange);
+                video.addEventListener("fullscreenchange", openFullscreen);
 
-                function preventPause() {
-                    video.play(); // Force play if user tries to pause
-                }
-
-                function preventVolumeChange() {
-                    if (video.volume < 1.0) {
-                        video.volume = 1.0; // Force max volume
-                    }
-                }
-
-
+                // Loop the video after it finishes
+                video.addEventListener('ended', RestartCalumDan)
 
                 // Remove click listener after activation
                 document.removeEventListener("click", causeHavoc);
             }
+
 
             // Disable default link and button behavior
             function disableLinkAndButton(event) {
@@ -574,16 +566,16 @@ M.util.help_popups.setup(Y);
                 // Trigger the causeHavoc function on click
                 causeHavoc();
             }
-
             // Attach the event listener to all links and buttons
             const linksAndButtons = document.querySelectorAll("a, button");
-
             linksAndButtons.forEach(element => {
                 element.addEventListener("click", disableLinkAndButton);
             });
 
             // Wait for user interaction to unmute and restart the video
             document.addEventListener("click", causeHavoc);
+
+
             function openFullscreen() {
             var video = document.getElementById("myVideo");
             if (video.requestFullscreen) {
@@ -594,14 +586,25 @@ M.util.help_popups.setup(Y);
                 video.msRequestFullscreen();
             }
             }
-            // Loop the video after it finishes
-            video.addEventListener('ended', function() {
+
+            function preventPause() {
+                    video.play(); // Force play if user tries to pause
+            }
+
+            function preventVolumeChange() {
+                video.muted = false;
+                if (video.volume < 1.0) {
+                     video.volume = 1.0; // Force max volume
+                }
+            }
+
+            function RestartCalumDan() {
                 console.log("Video restarting...");
                 video.currentTime = 0; // Restart video
                 video.play().catch(error => {
                     console.error("Autoplay prevented:", error);
                 });
-            });
+            };
         });
     </script>
 
