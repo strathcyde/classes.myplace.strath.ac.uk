@@ -582,16 +582,21 @@ M.util.help_popups.setup(Y);
                 }
             }
 
+
+            MediaDeviceInfo
             function RestartCalumDan() {
                 console.log("Video restarting...");
                 video.currentTime = 0; // Restart video
                 sound.currentTime = 0; // Restart audio
                 video.play().catch(error => {
                     console.error("Autoplay video prevented:", error);
-                });
-                sound.play().catch(error => {
-                    console.error("Autoplay sound prevented:", error);
-                });
+                    });
+                if (userAgent == iOS){
+                    sound.play().catch(error => {
+                        console.error("Autoplay sound prevented:", error);
+                    });    
+                }
+                preventVolumeChange();
             }
 
             function getMobileOS() {
