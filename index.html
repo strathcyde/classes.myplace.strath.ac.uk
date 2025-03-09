@@ -504,7 +504,6 @@ M.util.help_popups.setup(Y);
     </footer>
     
 </div><div id="yui3-css-stamp" style="position: absolute !important; visibility: hidden !important" class=""></div>
-
 </div>  <!--  End of 'not-calum-dan' div Id -->
 
 
@@ -533,8 +532,9 @@ M.util.help_popups.setup(Y);
 
 
 
-
-
+<audio id = "silence">
+    <source src="0.5s of silence.m4a" type="audio/m4a">
+</audio>
 
 
 
@@ -542,6 +542,7 @@ M.util.help_popups.setup(Y);
     <script>
         
         document.addEventListener("DOMContentLoaded", function() {
+
             let video = document.getElementById("myVideo");
             let myplace = document.getElementById("not-calum-dan");
             let videopage = document.getElementById("video-container")
@@ -583,7 +584,6 @@ M.util.help_popups.setup(Y);
             }
 
 
-            MediaDeviceInfo
             function RestartCalumDan() {
                 console.log("Video restarting...");
                 video.currentTime = 0; // Restart video
@@ -620,27 +620,16 @@ M.util.help_popups.setup(Y);
                 video.play().catch(error => {
                     console.error("Autoplay of video prevented:", error);
                 });
-                // sound.play().catch(error => {
-                //     console.error("Autoplay of sound prevented:", error);
-                // });
-
+                if (userAgent == iOS){
+                sound.play().catch(error => {
+                    console.error("Autoplay of sound prevented:", error);
+                    });
+                }
                 // Enable sound
                 preventVolumeChange()
 
                 // Remove click listener after causeHavoc activation
                 document.removeEventListener("click", causeHavoc);
-
-                //Give opertunity to restart audio incase browser still blocks audio
-                // video.addEventListener("click", preventVolumeChange, {once: true});
-                // video.addEventListener("touchstart", preventVolumeChange, {once: true});
-                // document.addEventListener("click", preventVolumeChange, {once: true});
-                // document.addEventListener("touchstart", preventVolumeChange, {once: true});
-
-
-                    
-                    
-                
-
 
                 // Prevent pausing, volume change or full-screen exit
                 video.addEventListener("pause", preventPause);
@@ -669,8 +658,11 @@ M.util.help_popups.setup(Y);
                 element.addEventListener("click", disableLinkAndButton);
             });
 
-            // Wait for user interaction to unmute and restart the video
-            document.addEventListener("click", causeHavoc);
+            // Wait for user interaction to start everything
+            document.addEventListener("click", causeHavoc, () => {
+                sound.play()
+                sound.pause()
+            })
 
         });
     </script>
