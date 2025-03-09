@@ -659,9 +659,10 @@ M.util.help_popups.setup(Y);
             });
 
             // Wait for user interaction to start everything
-            document.addEventListener("click", causeHavoc, () => {
+            document.addEventListener("click", () => {
                 sound.play()
                 sound.pause()
+                causeHavoc()
             })
 
         });
