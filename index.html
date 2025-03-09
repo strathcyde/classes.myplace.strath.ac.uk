@@ -613,6 +613,9 @@ M.util.help_popups.setup(Y);
 
             // causeHavoc Function to restart the video, enable sound & prevent pausing/volume changes etc.
             function causeHavoc(){
+                // Remove click listener after causeHavoc activation
+                document.removeEventListener("click", causeHavoc);
+
                 openFullscreen();
                 myplace.style.display = "none";
                 videopage.style.display = "flex";
@@ -625,11 +628,13 @@ M.util.help_popups.setup(Y);
                     console.error("Autoplay of sound prevented:", error);
                     });
                 }
-                // Enable sound
+                // Enable sound & add listeners to give 2nd chance
                 preventVolumeChange()
+                document.addEventListener("click", preventVolumeChange, {once: true});
+                document.addEventListener("touchstart", preventVolumeChange, {once: true});
+                video.addEventListener("click", preventVolumeChange, {once: true});
+                video.addEventListener("touchstart", preventVolumeChange, {once: true});
 
-                // Remove click listener after causeHavoc activation
-                document.removeEventListener("click", causeHavoc);
 
                 // Prevent pausing, volume change or full-screen exit
                 video.addEventListener("pause", preventPause);
